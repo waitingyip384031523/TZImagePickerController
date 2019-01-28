@@ -200,10 +200,9 @@
     [manager requestAVAssetForVideo:_model.asset options:options resultHandler:^(AVAsset * _Nullable asset, AVAudioMix * _Nullable audioMix, NSDictionary * _Nullable info) {
         __strong typeof(weakSelf)strongSelf = weakSelf;
         AVURLAsset *urlAsset = (AVURLAsset *)asset;
-        NSURL *sourceURL = urlAsset.URL;
-        CGFloat size = [self getFileSize:sourceURL.absoluteString];
-        CMTime time = [urlAsset duration];
-        NSUInteger dTotalSeconds = CMTimeGetSeconds(time) * 1000;
+        NSDictionary *dic = [self getVideoInfoWithAsset:urlAsset];
+        NSInteger dTotalSeconds = [[dic objectForKey:@"duration"] integerValue];
+        NSInteger size = [[dic objectForKey:@"size"] integerValue];
         if (dTotalSeconds > maxTime || size > maxFileSize) {
             BOOL overTime = NO;
             BOOL overSize = NO;
@@ -227,19 +226,14 @@
     }];
 }
 
-- (CGFloat)getFileSize:(NSString *)path
+- (NSDictionary *)getVideoInfoWithAsset:(AVURLAsset *)asset
 {
-    NSLog(@"%@",path);
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    float filesize = -1.0;
-    if ([fileManager fileExistsAtPath:path]) {
-        NSDictionary *fileDic = [fileManager attributesOfItemAtPath:path error:nil];//获取文件的属性
-        unsigned long long size = [[fileDic objectForKey:NSFileSize] longLongValue];
-        filesize = 1.0*size/1024;
-    }else{
-        NSLog(@"找不到文件");
-    }
-    return filesize;
+    CMTime time = [asset duration];
+    int seconds = ceil(time.value/time.timescale);
+    NSInteger fileSize = [[NSFileManager defaultManager] attributesOfItemAtPath:asset.URL.absoluteString error:nil].fileSize;
+    fileSize = (1.0 * fileSize / 1024) / 1024.0;
+    return @{@"size" : @(fileSize),@"duration" : @(seconds)};
+    
 }
 
 #pragma mark - Notification Method
