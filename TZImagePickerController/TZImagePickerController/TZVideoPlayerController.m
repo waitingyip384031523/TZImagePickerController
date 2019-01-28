@@ -200,9 +200,11 @@
     [manager requestAVAssetForVideo:_model.asset options:options resultHandler:^(AVAsset * _Nullable asset, AVAudioMix * _Nullable audioMix, NSDictionary * _Nullable info) {
         __strong typeof(weakSelf)strongSelf = weakSelf;
         AVURLAsset *urlAsset = (AVURLAsset *)asset;
-        NSDictionary *dic = [self getVideoInfoWithSourcePath:urlAsset.URL.absoluteString];
-        NSInteger dTotalSeconds = [[dic objectForKey:@"duration"] integerValue];
-        NSInteger size = [[dic objectForKey:@"size"] integerValue];
+        CMTime time = [asset duration];
+        NSInteger dTotalSeconds = ceil(time.value/time.timescale);
+        NSNumber *s;
+        [urlAsset.URL getResourceValue:&s forKey:NSURLFileSizeKey error:nil];
+        NSInteger size = [s floatValue]/(1024.0*1024.0);
         if (dTotalSeconds > maxTime || size > maxFileSize) {
             BOOL overTime = NO;
             BOOL overSize = NO;
@@ -224,17 +226,6 @@
             }
         }
     }];
-}
-
-- (NSDictionary *)getVideoInfoWithSourcePath:(NSString *)path
-{
-    AVURLAsset *asset = [AVURLAsset assetWithURL:[NSURL fileURLWithPath:path]];
-    CMTime time = [asset duration];
-    int seconds = ceil(time.value/time.timescale);
-    NSInteger fileSize = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil].fileSize;
-    fileSize = (1.0 * fileSize / 1024) / 1024.0;
-    return @{@"size" : @(fileSize),@"duration" : @(seconds)};
-    
 }
 
 #pragma mark - Notification Method
