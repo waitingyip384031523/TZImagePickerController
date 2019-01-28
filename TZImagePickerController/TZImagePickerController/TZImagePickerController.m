@@ -338,6 +338,12 @@
     self.processHintStr = [NSBundle tz_localizedStringForKey:@"Processing..."];
 }
 
+- (void)setVideoMaximumFileSize:(CGFloat)videoMaximumFileSize
+{
+    _videoMaximumDuration = videoMaximumFileSize;
+    [TZImagePickerConfig sharedInstance].videoMaximumFileSize = videoMaximumFileSize;
+}
+
 - (void)setShowSelectedIndex:(BOOL)showSelectedIndex {
     _showSelectedIndex = showSelectedIndex;
     if (showSelectedIndex) {
@@ -809,6 +815,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     TZPhotoPickerController *photoPickerVc = [[TZPhotoPickerController alloc] init];
     photoPickerVc.columnNumber = self.columnNumber;
+    photoPickerVc.fileSize = self.fi
     TZAlbumModel *model = _albumArr[indexPath.row];
     photoPickerVc.model = model;
     [self.navigationController pushViewController:photoPickerVc animated:YES];

@@ -94,6 +94,7 @@
 @property(nonatomic, assign) BOOL allowTakeVideo;
 /// Default value is 10 minutes / 视频最大拍摄时间，默认是10分钟，单位是秒
 @property (assign, nonatomic) NSTimeInterval videoMaximumDuration;
+@property (assign, nonatomic) CGFloat videoMaximumFileSize;
 /// Customizing UIImagePickerController's other properties, such as videoQuality / 定制UIImagePickerController的其它属性，比如视频拍摄质量videoQuality
 @property (nonatomic, copy) void(^uiImagePickerControllerSettingBlock)(UIImagePickerController *imagePickerController);
 
@@ -236,6 +237,7 @@
 @property (nonatomic, copy) void (^imagePickerControllerDidCancelHandle)(void);
 @property (nonatomic, copy) void (^didFinishPickingVideoHandle)(UIImage *coverImage,PHAsset *asset);
 @property (nonatomic, copy) void (^didFinishPickingGifImageHandle)(UIImage *animatedImage,id sourceAssets);
+@property (nonatomic, copy) void (^didFailPickingVideoOverSize)(BOOL overFileSize, BOOL overTimeSize);
 
 @property (nonatomic, weak) id<TZImagePickerControllerDelegate> pickerDelegate;
 
@@ -311,6 +313,8 @@
 @property (assign, nonatomic) BOOL showPhotoCannotSelectLayer;
 @property (assign, nonatomic) BOOL notScaleImage;
 @property (assign, nonatomic) BOOL needFixComposition;
+@property (assign, nonatomic) NSTimeInterval videoMaximumDuration;
+@property (assign, nonatomic) CGFloat videoMaximumFileSize;
 
 /// 默认是50，如果一个GIF过大，里面图片个数可能超过1000，会导致内存飙升而崩溃
 @property (assign, nonatomic) NSInteger gifPreviewMaxImagesCount;

@@ -190,12 +190,56 @@
 
 - (void)callDelegateMethod {
     TZImagePickerController *imagePickerVc = (TZImagePickerController *)self.navigationController;
-    if ([imagePickerVc.pickerDelegate respondsToSelector:@selector(imagePickerController:didFinishPickingVideo:sourceAssets:)]) {
-        [imagePickerVc.pickerDelegate imagePickerController:imagePickerVc didFinishPickingVideo:_cover sourceAssets:_model.asset];
+    PHVideoRequestOptions *options = [[PHVideoRequestOptions alloc] init];
+    options.version = PHImageRequestOptionsVersionCurrent;
+    options.deliveryMode = PHVideoRequestOptionsDeliveryModeAutomatic;
+    PHImageManager *manager = [PHImageManager defaultManager];
+    NSTimeInterval maxTime = [TZImagePickerConfig sharedInstance].videoMaximumDuration;
+    CGFloat maxFileSize = [TZImagePickerConfig sharedInstance].videoMaximumFileSize;
+    __weak typeof(self)weakSelf = self;
+    [manager requestAVAssetForVideo:_model.asset options:options resultHandler:^(AVAsset * _Nullable asset, AVAudioMix * _Nullable audioMix, NSDictionary * _Nullable info) {
+        __strong typeof(weakSelf)strongSelf = weakSelf;
+        AVURLAsset *urlAsset = (AVURLAsset *)asset;
+        NSURL *sourceURL = urlAsset.URL;
+        CGFloat size = [self getFileSize:sourceURL.absoluteString];
+        CMTime time = [urlAsset duration];
+        NSUInteger dTotalSeconds = CMTimeGetSeconds(time) * 1000;
+        if (dTotalSeconds > maxTime || size > maxFileSize) {
+            BOOL overTime = NO;
+            BOOL overSize = NO;
+            if (dTotalSeconds > maxTime) {
+                overTime = YES;
+            }
+            if (size > maxFileSize) {
+                overSize = YES;
+            }
+            if (imagePickerVc.didFailPickingVideoOverSize) {
+                imagePickerVc.didFailPickingVideoOverSize(overSize, overTime);
+            }
+        }else{
+            if ([imagePickerVc.pickerDelegate respondsToSelector:@selector(imagePickerController:didFinishPickingVideo:sourceAssets:)]) {
+                [imagePickerVc.pickerDelegate imagePickerController:imagePickerVc didFinishPickingVideo:strongSelf->_cover sourceAssets:strongSelf->_model.asset];
+            }
+            if (imagePickerVc.didFinishPickingVideoHandle) {
+                imagePickerVc.didFinishPickingVideoHandle(strongSelf->_cover,strongSelf->_model.asset);
+            }
+        }
+    }];
+}
+
+- (CGFloat)getFileSize:(NSString *)path
+{
+    NSLog(@"%@",path);
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    float filesize = -1.0;
+    if ([fileManager fileExistsAtPath:path]) {
+        NSDictionary *fileDic = [fileManager attributesOfItemAtPath:path error:nil];//获取文件的属性
+        unsigned long long size = [[fileDic objectForKey:NSFileSize] longLongValue];
+        filesize = 1.0*size/1024;
+    }else{
+        NSLog(@"找不到文件");
     }
-    if (imagePickerVc.didFinishPickingVideoHandle) {
-        imagePickerVc.didFinishPickingVideoHandle(_cover,_model.asset);
-    }
+    return filesize;
 }
 
 #pragma mark - Notification Method
