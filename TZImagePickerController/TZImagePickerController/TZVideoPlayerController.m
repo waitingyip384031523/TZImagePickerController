@@ -226,11 +226,12 @@
     }];
 }
 
-- (NSDictionary *)getVideoInfoWithAsset:(AVURLAsset *)asset
+- (NSDictionary *)getVideoInfoWithSourcePath:(NSString *)path
 {
+    AVURLAsset *asset = [AVURLAsset assetWithURL:[NSURL fileURLWithPath:path]];
     CMTime time = [asset duration];
     int seconds = ceil(time.value/time.timescale);
-    NSInteger fileSize = [[NSFileManager defaultManager] attributesOfItemAtPath:asset.URL.absoluteString error:nil].fileSize;
+    NSInteger fileSize = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil].fileSize;
     fileSize = (1.0 * fileSize / 1024) / 1024.0;
     return @{@"size" : @(fileSize),@"duration" : @(seconds)};
     
