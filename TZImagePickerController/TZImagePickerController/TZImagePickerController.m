@@ -367,6 +367,12 @@
     [TZImagePickerConfig sharedInstance].needFixComposition = needFixComposition;
 }
 
+- (void)setVideoMaximumDuration:(NSTimeInterval)videoMaximumDuration
+{
+    _videoMaximumDuration = videoMaximumDuration;
+    [TZImagePickerConfig sharedInstance].videoMaximumDuration = videoMaximumDuration;
+}
+
 - (void)observeAuthrizationStatusChange {
     [_timer invalidate];
     _timer = nil;
