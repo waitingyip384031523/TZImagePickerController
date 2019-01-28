@@ -200,7 +200,7 @@
     [manager requestAVAssetForVideo:_model.asset options:options resultHandler:^(AVAsset * _Nullable asset, AVAudioMix * _Nullable audioMix, NSDictionary * _Nullable info) {
         __strong typeof(weakSelf)strongSelf = weakSelf;
         AVURLAsset *urlAsset = (AVURLAsset *)asset;
-        NSDictionary *dic = [self getVideoInfoWithAsset:urlAsset];
+        NSDictionary *dic = [self getVideoInfoWithSourcePath:urlAsset.URL.absoluteString];
         NSInteger dTotalSeconds = [[dic objectForKey:@"duration"] integerValue];
         NSInteger size = [[dic objectForKey:@"size"] integerValue];
         if (dTotalSeconds > maxTime || size > maxFileSize) {
