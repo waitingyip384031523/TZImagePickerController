@@ -815,7 +815,6 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     TZPhotoPickerController *photoPickerVc = [[TZPhotoPickerController alloc] init];
     photoPickerVc.columnNumber = self.columnNumber;
-    photoPickerVc.fileSize = self.fi
     TZAlbumModel *model = _albumArr[indexPath.row];
     photoPickerVc.model = model;
     [self.navigationController pushViewController:photoPickerVc animated:YES];
