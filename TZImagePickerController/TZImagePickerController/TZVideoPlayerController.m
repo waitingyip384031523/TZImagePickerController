@@ -205,7 +205,7 @@
         NSNumber *s;
         [urlAsset.URL getResourceValue:&s forKey:NSURLFileSizeKey error:nil];
         NSInteger size = [s floatValue]/(1024.0*1024.0);
-        if (dTotalSeconds > maxTime || size > maxFileSize) {
+        if ((dTotalSeconds > maxTime && maxTime > 0) || (size > maxFileSize && maxFileSize > 0)) {
             BOOL overTime = NO;
             BOOL overSize = NO;
             if (dTotalSeconds > maxTime) {
