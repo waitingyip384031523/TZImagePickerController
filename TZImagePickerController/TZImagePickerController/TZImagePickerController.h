@@ -235,7 +235,7 @@
 @property (nonatomic, copy) void (^didFinishPickingPhotosHandle)(NSArray<UIImage *> *photos,NSArray *assets,BOOL isSelectOriginalPhoto);
 @property (nonatomic, copy) void (^didFinishPickingPhotosWithInfosHandle)(NSArray<UIImage *> *photos,NSArray *assets,BOOL isSelectOriginalPhoto,NSArray<NSDictionary *> *infos);
 @property (nonatomic, copy) void (^imagePickerControllerDidCancelHandle)(void);
-@property (nonatomic, copy) void (^didFinishPickingVideoHandle)(UIImage *coverImage,PHAsset *asset);
+@property (nonatomic, copy) void (^didFinishPickingVideoHandle)(UIImage *coverImage,PHAsset *asset, NSTimeInterval timerInterval);
 @property (nonatomic, copy) void (^didFinishPickingGifImageHandle)(UIImage *animatedImage,id sourceAssets);
 @property (nonatomic, copy) void (^didFailPickingVideoOverSize)(BOOL overFileSize, BOOL overTimeSize);
 
@@ -264,7 +264,7 @@
 // If allowPickingMultipleVideo is YES, will call imagePickerController:didFinishPickingPhotos:sourceAssets:isSelectOriginalPhoto:
 // 如果用户选择了一个视频且allowPickingMultipleVideo是NO，下面的代理方法会被执行
 // 如果allowPickingMultipleVideo是YES，将会调用imagePickerController:didFinishPickingPhotos:sourceAssets:isSelectOriginalPhoto:
-- (void)imagePickerController:(TZImagePickerController *)picker didFinishPickingVideo:(UIImage *)coverImage sourceAssets:(PHAsset *)asset;
+- (void)imagePickerController:(TZImagePickerController *)picker didFinishPickingVideo:(UIImage *)coverImage sourceAssets:(PHAsset *)asset time:(NSTimeInterval)timeInterval;
 
 // If user picking a gif image and allowPickingMultipleVideo is NO, this callback will be called.
 // If allowPickingMultipleVideo is YES, will call imagePickerController:didFinishPickingPhotos:sourceAssets:isSelectOriginalPhoto:
@@ -315,6 +315,7 @@
 @property (assign, nonatomic) BOOL needFixComposition;
 @property (assign, nonatomic) NSTimeInterval videoMaximumDuration;
 @property (assign, nonatomic) CGFloat videoMaximumFileSize;
+@property (assign, nonatomic) NSInteger vipLevel;
 
 /// 默认是50，如果一个GIF过大，里面图片个数可能超过1000，会导致内存飙升而崩溃
 @property (assign, nonatomic) NSInteger gifPreviewMaxImagesCount;

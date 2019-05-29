@@ -218,11 +218,11 @@
                 imagePickerVc.didFailPickingVideoOverSize(overSize, overTime);
             }
         }else{
-            if ([imagePickerVc.pickerDelegate respondsToSelector:@selector(imagePickerController:didFinishPickingVideo:sourceAssets:)]) {
-                [imagePickerVc.pickerDelegate imagePickerController:imagePickerVc didFinishPickingVideo:strongSelf->_cover sourceAssets:strongSelf->_model.asset];
+            if ([imagePickerVc.pickerDelegate respondsToSelector:@selector(imagePickerController:didFinishPickingVideo:sourceAssets:time:)]) {
+                [imagePickerVc.pickerDelegate imagePickerController:imagePickerVc didFinishPickingVideo:strongSelf->_cover sourceAssets:strongSelf->_model.asset time:dTotalSeconds];
             }
             if (imagePickerVc.didFinishPickingVideoHandle) {
-                imagePickerVc.didFinishPickingVideoHandle(strongSelf->_cover,strongSelf->_model.asset);
+                imagePickerVc.didFinishPickingVideoHandle(strongSelf->_cover,strongSelf->_model.asset,dTotalSeconds);
             }
         }
     }];
